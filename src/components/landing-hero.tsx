@@ -80,7 +80,7 @@ export default function LandingHero() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.5 }}
             >
-              <span className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100 md:text-4xl">
+              <span className="text-2xl font-semibold text-zinc 800 dark:text-zinc-100 md:text-4xl">
                 Software Developer
               </span>
             </motion.div>
