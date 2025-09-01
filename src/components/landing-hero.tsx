@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 export default function LandingHero() {
   const [scrollY, setScrollY] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   let progress = 0;
   const { current: elContainer } = ref;
@@ -17,126 +16,10 @@ export default function LandingHero() {
     setScrollY(window.scrollY);
   };
 
-  // Particle animation effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Set canvas size
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    // Particles setup
-    const particles: Array<{
-      x: number;
-      y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
-      color: string;
-    }> = [];
-
-    // Create initial particles
-    for (let i = 0; i < 40; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 3 + 1,
-        speedX: Math.random() * 0.5 - 0.25,
-        speedY: Math.random() * 0.5 - 0.25,
-        color: `hsla(${Math.random() * 360}, 70%, 60%, ${
-          Math.random() * 0.4 + 0.1
-        })`,
-      });
-    }
-
-    // Animation loop
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Update and draw particles
-      particles.forEach((particle) => {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-
-        // Wrap around edges
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.y > canvas.height) particle.y = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-      });
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-    };
-  }, []);
-
   useEffect(() => {
     document.addEventListener("scroll", handleScroll);
     return () => document.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Text animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
-  };
-
-  const gradientVariants = {
-    hidden: {
-      backgroundPosition: "0% 50%",
-      opacity: 0,
-    },
-    visible: {
-      backgroundPosition: "100% 50%",
-      opacity: 1,
-      transition: {
-        backgroundPosition: {
-          duration: 8,
-          ease: "linear",
-          repeat: Infinity,
-          repeatType: "reverse",
-        },
-        opacity: { duration: 0.8 },
-      },
-    },
-  };
 
   return (
     <motion.section
@@ -145,48 +28,31 @@ export default function LandingHero() {
       }}
       transition={{ type: "spring", stiffness: 100 }}
       ref={ref}
-      className="pointer-events-none relative flex max-h-[1000px] min-h-[calc(100vh-200px)] items-center overflow-hidden px-6 sm:px-14 md:h-[calc(100vh-200px)] md:min-h-max md:px-20"
+      className="pointer-events-none flex max-h-[1000px] min-h-[calc(100vh-200px)] items-center px-6 sm:px-14 md:h-[calc(100vh-200px)] md:min-h-max md:px-20"
     >
-      {/* Animated background canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-30"
-        style={{ zIndex: -1 }}
-      />
-
-      {/* Gradient overlay */}
-      <motion.div
-        className="absolute inset-0 opacity-20"
-        variants={gradientVariants}
-        initial="hidden"
-        animate="visible"
-        style={{
-          background:
-            "linear-gradient(270deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff)",
-          backgroundSize: "400% 400%",
-          filter: "blur(60px)",
-        }}
-      />
-
-      <div className="relative z-10 w-full">
+      <div className="w-full">
         <div className="mx-auto max-w-7xl">
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.div variants={itemVariants} className="mb-2">
-              <motion.span
-                className="text-lg font-medium text-zinc-700 dark:text-zinc-300"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="mb-2"
+            >
+              <span className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
                 Hello, I&apos;m
-              </motion.span>
+              </span>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
+            <motion.div
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
               <motion.h1
                 className="pb-2 text-6xl font-bold sm:text-7xl md:text-8xl xl:text-9xl"
                 initial={{ backgroundPosition: "0% 50%" }}
@@ -209,101 +75,57 @@ export default function LandingHero() {
               </motion.h1>
             </motion.div>
 
-            <motion.div variants={itemVariants}>
-              <motion.span
-                className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100 md:text-4xl"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.7 }}
-              >
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+            >
+              <span className="text-2xl font-semibold text-zinc-800 dark:text-zinc-100 md:text-4xl">
                 Software Developer
-              </motion.span>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="mt-8 max-w-3xl">
-              <motion.p
-                className="text-lg font-medium text-zinc-700 dark:text-zinc-300 sm:text-xl md:text-2xl"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-              >
-                I am a software developer specializing in building
-                high-performance, user-focused web applications. Skilled in{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  ReactJS
-                </motion.span>
-                ,{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  NextJS
-                </motion.span>
-                ,{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  SolidJS
-                </motion.span>
-                , and an expert in{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  JavaScript
-                </motion.span>
-                ,{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  HTML
-                </motion.span>{" "}
-                and{" "}
-                <motion.span
-                  className="font-semibold text-accent"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  CSS
-                </motion.span>
-              </motion.p>
+              </span>
             </motion.div>
 
             <motion.div
-              variants={itemVariants}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mt-8 max-w-3xl"
+            >
+              <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300 sm:text-xl md:text-2xl">
+                I am a software developer specializing in building
+                high-performance, user-focused web applications. Skilled in{" "}
+                <span className="font-semibold text-accent">ReactJS</span>,{" "}
+                <span className="font-semibold text-accent">NextJS</span>,{" "}
+                <span className="font-semibold text-accent">SolidJS</span>, and
+                an expert in{" "}
+                <span className="font-semibold text-accent">JavaScript</span>,{" "}
+                <span className="font-semibold text-accent">HTML</span> and{" "}
+                <span className="font-semibold text-accent">CSS</span>
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 1.2 }}
               className="pointer-events-auto mt-12"
             >
-              <motion.div
-                className="flex flex-wrap gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 }}
-              >
+              <div className="flex flex-wrap gap-4">
                 <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 25px -10px rgba(99, 102, 241, 0.5)",
-                  }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 font-medium text-white"
                 >
                   View My Work
                 </motion.button>
                 <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 10px 25px -10px rgba(0, 0, 0, 0.1)",
-                  }}
+                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="rounded-full border border-gray-300 px-6 py-3 font-medium text-gray-700 dark:border-gray-600 dark:text-gray-300"
                 >
                   Contact Me
                 </motion.button>
-              </motion.div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
